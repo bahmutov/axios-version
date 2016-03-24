@@ -1,7 +1,7 @@
 {
   "name": "axios-version",
+  "version": "0.0.0-semantic-release",
   "description": "Validating service version from response headers for axios",
-  "version": "1.0.0",
   "author": "Gleb Bahmutov <gleb.bahmutov@gmail.com>",
   "bugs": "https://github.com/bahmutov/axios-version/issues",
   "config": {
@@ -47,7 +47,8 @@
     "size": "t=\"$(npm pack .)\"; wc -c \"${t}\"; tar tvf \"${t}\"; rm \"${t}\";",
     "test": "npm run unit",
     "unit": "mocha src/*-spec.js",
-    "commit": "commit-wizard"
+    "commit": "commit-wizard",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "devDependencies": {
     "git-issues": "1.2.0",
@@ -55,7 +56,8 @@
     "nsp": "2.2.1",
     "pre-git": "3.7.1",
     "standard": "6.0.8",
-    "standard-format": "2.1.1"
+    "standard-format": "2.1.1",
+    "semantic-release": "^4.3.5"
   },
   "dependencies": {
     "debug": "2.2.0"
