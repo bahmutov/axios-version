@@ -39,27 +39,34 @@
     "url": "https://github.com/bahmutov/axios-version.git"
   },
   "scripts": {
-    "format": "standard-format -w index.js src/*.js",
+    "format": "standard-format -w index.js src/*.js demo/*.js",
     "issues": "git-issues",
-    "lint": "standard --verbose index.js src/*.js",
+    "lint": "standard --verbose index.js src/*.js demo/*.js",
     "pretest": "npm run format && npm run lint",
     "secure": "nsp check",
     "size": "t=\"$(npm pack .)\"; wc -c \"${t}\"; tar tvf \"${t}\"; rm \"${t}\";",
     "test": "npm run unit",
     "unit": "mocha src/*-spec.js",
     "commit": "commit-wizard",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post",
+    "demo-server": "node demo/server.js",
+    "demo-client": "DEBUG=ver NODE_PATH=.. node -r axios-version demo/client.js"
   },
   "devDependencies": {
     "git-issues": "1.2.0",
+    "koa": "1.2.0",
+    "koa-version-header": "1.3.0",
     "mocha": "2.4.5",
     "nsp": "2.2.1",
     "pre-git": "3.7.1",
+    "semantic-release": "^4.3.5",
     "standard": "6.0.8",
-    "standard-format": "2.1.1",
-    "semantic-release": "^4.3.5"
+    "standard-format": "2.1.1"
   },
   "dependencies": {
-    "debug": "2.2.0"
+    "axios": "0.9.1",
+    "check-more-types": "2.12.1",
+    "debug": "2.2.0",
+    "lazy-ass": "1.4.0"
   }
 }
