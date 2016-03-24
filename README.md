@@ -18,6 +18,19 @@ Imagine that a server returns its name and version in response headers, for exam
 [koa-version-header](https://github.com/bahmutov/koa-version-header). This package allows
 you to validate that the server is running the version we expect and trust.
 
+Set the allowed service versions in `package.json`, for example in this package for the demo
+I use the following
+
+```json
+{
+  "config": {
+    "services": {
+      "demo-server": "1.2.*"
+    }
+  }
+}
+```
+
 I recommend preloading this package when running your module. For example, if you typically
 run `node index.js` you should run like this instead
 
@@ -26,6 +39,58 @@ run `node index.js` you should run like this instead
 If you want to debug the interceptors and the version login, run with environment variable
 
     DEBUG=ver node -r axios-version index.js
+
+## Demo
+
+Start demo server in one tab
+
+```sh
+$ node demo/server.js
+```
+
+Run client from another tab
+
+```sh
+$ npm run demo-client
+
+> axios-version@0.0.0-semantic-release demo-client /git/axios-version
+> DEBUG=ver NODE_PATH=.. node -r axios-version demo/client.js
+
+  ver installed axios interceptor for +0ms [ 'demo-server' ]
+  ver validating response from +53ms http://localhost:3000
+  ver got response from demo-server@1.2.0 +2ms
+  ver demo-server@1.2.0 satisfies 1.2.*? true +3ms
+service demo-server@1.2.0 says ok
+```
+
+The server `demo-server@1.2.0` is allowed in the response. Now change the `package.json` file
+and require `demo-server@1.3.0` for example
+
+```json
+{
+  "config": {
+    "services": {
+      "demo-server": "1.3.*"
+    }
+  }
+}
+```
+
+```sh
+$ npm run demo-client
+
+> axios-version@0.0.0-semantic-release demo-client /git/axios-version
+> DEBUG=ver NODE_PATH=.. node -r axios-version demo/client.js
+
+  ver installed axios interceptor for +0ms [ 'demo-server' ]
+  ver validating response from +46ms http://localhost:3000
+  ver got response from demo-server@1.2.0 +1ms
+  ver demo-server@1.2.0 satisfies 1.3.0? false +3ms
+[Error: Service version mismatch]
+```
+
+The response no longer works because the run time service has "wrong" version that we do not
+trust yet.
 
 ### Small print
 
