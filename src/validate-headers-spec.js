@@ -20,71 +20,71 @@ describe('validate headers', () => {
     return headers
   }
 
+  function pass (name, version) {
+    const h = headers(name, version)
+    la(validate(deps, h), h)
+  }
+
+  function fail (name, version) {
+    const h = headers(name, version)
+    la(!validate(deps, h), h)
+  }
+
   it('is a function', () => {
     la(is.fn(validate))
   })
 
   it('likes strict version', () => {
-    la(validate(deps, headers('foo', '1.2.5')))
+    pass('foo', '1.2.5')
   })
 
   describe('caret ^', () => {
     it('likes caret version patch', () => {
-      la(validate(deps, headers('bar', '2.2.3')))
+      pass('bar', '2.2.3')
     })
 
     it('likes caret version minor', () => {
-      const satisfies = validate(deps, headers('bar', '2.3.0'))
-      la(satisfies)
+      pass('bar', '2.3.0')
     })
 
     it('likes caret version up to major', () => {
-      const satisfies = validate(deps, headers('bar', '3.0.0'))
-      la(!satisfies)
+      fail('bar', '3.0.0')
     })
   })
 
   describe('tilda ~', () => {
     it('likes tilda exact', () => {
-      const satisfies = validate(deps, headers('baz', '3.5.0'))
-      la(satisfies)
+      pass('baz', '3.5.0')
     })
 
     it('likes tilda patch', () => {
-      const satisfies = validate(deps, headers('baz', '3.5.6'))
-      la(satisfies)
+      pass('baz', '3.5.6')
     })
 
     it('does not allow below tilda', () => {
-      const satisfies = validate(deps, headers('baz', '3.4.0'))
-      la(!satisfies)
+      fail('baz', '3.4.0')
     })
 
     it('does not allow tilda minor', () => {
-      const satisfies = validate(deps, headers('baz', '3.6.0'))
-      la(!satisfies)
+      fail('baz', '3.6.0')
     })
   })
 
   describe('wildard *', () => {
     it('likes exact', () => {
-      const satisfies = validate(deps, headers('bad', '10.0.1'))
-      la(satisfies)
+      pass('bad', '10.0.1')
     })
 
     it('likes higher minor', () => {
-      const satisfies = validate(deps, headers('bad', '10.5.1'))
-      la(satisfies)
+      pass('bad', '10.5.1')
     })
 
     it('allows diff patch', () => {
-      const satisfies = validate(deps, headers('bad', '10.5.2'))
-      la(satisfies)
+      pass('bad', '10.5.2')
     })
 
     it('does not allow diff major', () => {
-      const satisfies = validate(deps, headers('bad', '11.5.1'))
-      la(!satisfies)
+      fail('bad', '11.5.1')
     })
   })
 })
