@@ -70,6 +70,7 @@
     "axios": "0.9.1",
     "check-more-types": "2.12.1",
     "debug": "2.2.0",
-    "lazy-ass": "1.4.0"
+    "lazy-ass": "1.4.0",
+    "semver": "5.1.0"
   }
 }
