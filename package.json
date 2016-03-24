@@ -16,6 +16,9 @@
       ],
       "post-commit": [],
       "post-merge": []
+    },
+    "services": {
+      "demo-server": "1.2.*"
     }
   },
   "files": [

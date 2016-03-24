@@ -9,7 +9,15 @@ describe('validate headers', () => {
   const deps = {
     foo: '1.2.5',
     bar: '^2.2.0',
-    baz: '~3.5.0'
+    baz: '~3.5.0',
+    bad: '10.*.1'
+  }
+
+  function headers (name, version) {
+    const headers = {}
+    headers[validate.NAME_HEADER] = name
+    headers[validate.VERSION_HEADER] = version
+    return headers
   }
 
   it('is a function', () => {
@@ -17,77 +25,65 @@ describe('validate headers', () => {
   })
 
   it('likes strict version', () => {
-    const headers = {}
-    headers[validate.NAME_HEADER] = 'foo'
-    headers[validate.VERSION_HEADER] = deps.foo
-
-    const satisfies = validate(deps, headers)
-    la(satisfies)
+    la(validate(deps, headers('foo', '1.2.5')))
   })
 
   describe('caret ^', () => {
     it('likes caret version patch', () => {
-      const headers = {}
-      headers[validate.NAME_HEADER] = 'bar'
-      headers[validate.VERSION_HEADER] = '2.2.3'
-
-      const satisfies = validate(deps, headers)
-      la(satisfies)
+      la(validate(deps, headers('bar', '2.2.3')))
     })
 
     it('likes caret version minor', () => {
-      const headers = {}
-      headers[validate.NAME_HEADER] = 'bar'
-      headers[validate.VERSION_HEADER] = '2.3.0'
-
-      const satisfies = validate(deps, headers)
+      const satisfies = validate(deps, headers('bar', '2.3.0'))
       la(satisfies)
     })
 
     it('likes caret version up to major', () => {
-      const headers = {}
-      headers[validate.NAME_HEADER] = 'bar'
-      headers[validate.VERSION_HEADER] = '3.0.0'
-
-      const satisfies = validate(deps, headers)
+      const satisfies = validate(deps, headers('bar', '3.0.0'))
       la(!satisfies)
     })
   })
 
   describe('tilda ~', () => {
     it('likes tilda exact', () => {
-      const headers = {}
-      headers[validate.NAME_HEADER] = 'baz'
-      headers[validate.VERSION_HEADER] = '3.5.0'
-
-      const satisfies = validate(deps, headers)
+      const satisfies = validate(deps, headers('baz', '3.5.0'))
       la(satisfies)
     })
 
     it('likes tilda patch', () => {
-      const headers = {}
-      headers[validate.NAME_HEADER] = 'baz'
-      headers[validate.VERSION_HEADER] = '3.5.6'
-
-      const satisfies = validate(deps, headers)
+      const satisfies = validate(deps, headers('baz', '3.5.6'))
       la(satisfies)
     })
 
     it('does not allow below tilda', () => {
-      const headers = {}
-      headers[validate.NAME_HEADER] = 'baz'
-      headers[validate.VERSION_HEADER] = '3.4.0'
-
-      const satisfies = validate(deps, headers)
+      const satisfies = validate(deps, headers('baz', '3.4.0'))
       la(!satisfies)
     })
 
     it('does not allow tilda minor', () => {
-      const headers = {}
-      headers[validate.NAME_HEADER] = 'baz'
-      headers[validate.VERSION_HEADER] = '3.6.0'
+      const satisfies = validate(deps, headers('baz', '3.6.0'))
+      la(!satisfies)
+    })
+  })
 
-      const satisfies = validate(deps, headers)
+  describe('wildard *', () => {
+    it('likes exact', () => {
+      const satisfies = validate(deps, headers('bad', '10.0.1'))
+      la(satisfies)
+    })
+
+    it('likes higher minor', () => {
+      const satisfies = validate(deps, headers('bad', '10.5.1'))
+      la(satisfies)
+    })
+
+    it('allows diff patch', () => {
+      const satisfies = validate(deps, headers('bad', '10.5.2'))
+      la(satisfies)
+    })
+
+    it('does not allow diff major', () => {
+      const satisfies = validate(deps, headers('bad', '11.5.1'))
       la(!satisfies)
     })
   })
