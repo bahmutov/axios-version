@@ -6,3 +6,6 @@ const serviceDependencies = {
 
 const install = require('./src/install-interceptor')
 install(serviceDependencies)
+
+const debug = require('debug')('ver')
+debug('installed axios interceptor for', Object.keys(serviceDependencies))

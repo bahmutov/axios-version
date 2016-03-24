@@ -8,6 +8,25 @@
 [![semantic-release][semantic-image] ][semantic-url]
 [![js-standard-style][standard-image]][standard-url]
 
+## Install
+
+    npm install -S axios-version
+
+## Use
+
+Imagine that a server returns its name and version in response headers, for example using
+[koa-version-header](https://github.com/bahmutov/koa-version-header). This package allows
+you to validate that the server is running the version we expect and trust.
+
+I recommend preloading this package when running your module. For example, if you typically
+run `node index.js` you should run like this instead
+
+    node -r axios-version index.js
+
+If you want to debug the interceptors and the version login, run with environment variable
+
+    DEBUG=ver node -r axios-version index.js
+
 ### Small print
 
 Author: Gleb Bahmutov &lt;gleb.bahmutov@gmail.com&gt; &copy; 2016
